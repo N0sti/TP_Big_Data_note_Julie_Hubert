@@ -114,6 +114,28 @@ hadoop jar /tmp/jars/hadoop-tp3-collaborativeFiltering-job1-1.0.jar \
   -Dinput=/input/relationships/data.txt \
   -Doutput=/output/job1
 ```
+## Procédure pour tester le code
+```bash
+#supprimer l'ancien jar du conteneur
+docker exec -it conteneur_TP_Final su - epfuser
+cd /tmp/jars
+ls -l
+#verifier si il y a qqchose
+rm rm hadoop-tp3-collaborativeFiltering-job1-1.0.jar
+ls -l
+exit
+#recompiler le projet pour avoir un nouveau jar
+mvn clean install
+#remettre le nouveau jar dans le conteneur
+docker cp "C:\Julie\MIN-5A\3- Outil big data\TP_final\hadoop-tp3\p-collaborative-filtering-job-1\target\hadoop-tp3-collaborativeFiltering-job1-1.0.jar" conteneur_TP_Final:/tmp/jars/
+docker exec -it conteneur_TP_Final su - epfuser
+cd /tmp/jars
+ls -l
+#verifier si il y a qqchose
+rm rm hadoop-tp3-collaborativeFiltering-job1-1.0.jar
+ls -l
+hadoop jar /tmp/jars/hadoop-tp3-collaborativeFiltering-job1-1.0.jar org.epf.hadoop.colfil1.ColFilJob1 /input/relationships/data.txt /output/job1
+```
 
 ## 📁 Structure du Projet
 

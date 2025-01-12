@@ -33,7 +33,10 @@ public class RelationshipRecordReader extends RecordReader<LongWritable, Relatio
 
             // Read line number from `lineRecordReader` and update current key
             currentKey.set(lineRecordReader.getCurrentKey().get());
-
+            String line = lineRecordReader.getCurrentValue().toString();
+            String[] parts = line.split(";")[0].split("<->");  // Ignore le timestamp
+            currentValue.setId1(parts[0]);
+            currentValue.setId2(parts[1]);
             // TODO: Your code here
             // Read line data and update current value
             // HINT: What methods can you call on `lineRecordReader`?
