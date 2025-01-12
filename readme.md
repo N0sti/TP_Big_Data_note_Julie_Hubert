@@ -2,7 +2,6 @@
 
 ![Hadoop](https://img.shields.io/badge/Hadoop-3.3.6-blue)
 ![Docker](https://img.shields.io/badge/Docker-latest-brightgreen)
-![License](https://img.shields.io/badge/license-MIT-green)
 
 ## 🎯 Description
 
@@ -18,46 +17,102 @@ Le projet se compose principalement de la mise en œuvre d'un pipeline de traite
 - Maven ou Gradle
 - HDFS (Hadoop Distributed File System)
 
-## 📦 Installation
 
+## 📦 Installation et Configuration
+
+### 1. Clonage du Projet
 ```bash
 # Cloner le repo
 git clone https://github.com/votre-username/hadoop-tp-final.git
 cd hadoop-tp-final
+```
+
+### 2. Construction de l'Image Docker
+```bash
+# Naviguer vers le dossier deploy
+cd ./deploy/
 
 # Construire l'image Docker
-cd ./deploy/
 docker buildx build -t hadoop-tp-final-img .
 ```
 
-## 🚀 Démarrage
-
+### 3. Démarrage du Conteneur
 ```bash
-# Lancer le conteneur
+# Lancer le conteneur avec les volumes montés
 docker run -d --rm \
   -p 8088:8088 \
   -p 9870:9870 \
   -p 9864:9864 \
-  -v "${PWD}/data:/tmp/data" \
-  -v "${PWD}/jars:/tmp/jars" \
+  -v "C:\Julie\MIN-5A\3- Outil big data\TP_final\hadoop-tp3\data:/tmp/data" \
+  -v "C:\Julie\MIN-5A\3- Outil big data\TP_final\hadoop-tp3\jars:/tmp/jars" \
   --name conteneur_TP_Final \
   hadoop-tp-final-img
 ```
 
-## 💾 Configuration HDFS
+## 🔄 Configuration HDFS et Import des Données
 
+### 1. Connexion au Conteneur
 ```bash
-# Se connecter au conteneur
 docker exec -it conteneur_TP_Final su - epfuser
+```
 
-# Créer la structure de dossiers
+### 2. Création et Vérification de la Structure HDFS
+```bash
+# Créer le répertoire pour les relations
 hdfs dfs -mkdir -p /input/relationships
 
-# Vérifier la structure
+# Vérifier la structure HDFS
 hdfs dfs -ls /
+hadoop fs -ls /input/relationships
+```
 
-# Importer les données
-hdfs dfs -put /tmp/data/relationships/data.txt /input/relationships/
+### 3. Vérification des Données Sources
+```bash
+# Vérifier la présence du fichier de données
+ls /tmp/data/relationships/
+# Résultat attendu :
+# data.txt
+```
+
+### 4. Import des Données dans HDFS
+```bash
+# Copier les données vers HDFS
+hadoop fs -put /tmp/data/relationships/data.txt /input/relationships/
+```
+
+## 📦 Compilation et Déploiement
+
+### 1. Compilation du Projet
+```bash
+# Quitter la session epfuser
+exit
+
+# Compiler le projet avec Maven
+mvn clean install
+```
+
+### 2. Déploiement dans le Conteneur
+```bash
+# Copier le JAR dans le conteneur
+docker cp "C:\Julie\MIN-5A\3- Outil big data\TP_final\hadoop-tp3\p-collaborative-filtering-job-1\target\hadoop-tp3-collaborativeFiltering-job1-1.0.jar" conteneur_TP_Final:/tmp/jars/
+
+# Se reconnecter au conteneur et vérifier le déploiement
+docker exec -it conteneur_TP_Final su - epfuser
+cd /tmp/jars
+ls -l
+
+# Résultat attendu :
+# total 8
+# -rwxr-xr-x 1 root root 5916 Jan 12 18:34 hadoop-tp3-collaborativeFiltering-job1-1.0.jar
+```
+
+### 3. Exécution du Job MapReduce
+```bash
+# Lancer le job MapReduce
+hadoop jar /tmp/jars/hadoop-tp3-collaborativeFiltering-job1-1.0.jar \
+  org.epf.hadoop.colfil1.ColFilJob1 \
+  -Dinput=/input/relationships/data.txt \
+  -Doutput=/output/job1
 ```
 
 ## 📁 Structure du Projet

@@ -21,6 +21,7 @@ public class RelationshipRecordReader extends RecordReader<LongWritable, Relatio
     @Override
     public boolean nextKeyValue() throws IOException, InterruptedException {
         boolean hasNext = lineRecordReader.nextKeyValue();
+        System.out.println(lineRecordReader.getCurrentValue());
         if (hasNext) {
             // If the input split `hasNext` (i.e. has more data to read),
             // we will set the current key to the line number
