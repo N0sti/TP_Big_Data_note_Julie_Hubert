@@ -140,7 +140,19 @@ hadoop jar /tmp/jars/hadoop-tp3-collaborativeFiltering-job1-1.0.jar org.epf.hado
 hdfs dfs -cat /output/job1/part-r-00000
 hdfs dfs -ls /output/job1
 ```
-
+### Extraire les Résultats et les afficher dans le PC en local
+#### Dans le conteneur
+```bash
+mkdir -p /home/epfuser/relationships/job1
+hdfs dfs -get /output/job1 /home/epfuser/relationships/job1
+ls /home/epfuser/relationships/job1  # Pour vérifier que les fichiers ont été copiés
+exit  # Pour sortir du conteneur
+```
+#### Dans le PC local
+```bash
+mkdir -p "C:\Julie\MIN-5A\3- Outil big data\TP_final\hadoop-tp3\data\relationships\job1"
+docker cp "conteneur_TP_Final:/home/epfuser/relationships/job1" "C:\Julie\MIN-5A\3- Outil big data\TP_final\hadoop-tp3\data\relationships\job1"
+```
 ## 📁 Structure du Projet
 
 ```
