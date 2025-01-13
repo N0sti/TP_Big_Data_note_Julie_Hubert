@@ -7,13 +7,33 @@ import java.io.IOException;
 
 public class RelationshipMapper extends Mapper<LongWritable, Relationship, Text, Text> {
 
+    private Text outKey = new Text();
+    private Text outValue = new Text();
+
     @Override
     public void map(LongWritable key, Relationship value, Context context)
             throws IOException, InterruptedException {
-        Text userId1 = new Text(value.getId1());
-        Text userId2 = new Text(value.getId2());
+        // Nettoyer les IDs en retirant le timestamp
+        String id1 = cleanId(value.getId1());
+        String id2 = cleanId(value.getId2());
 
-        context.write(userId1, userId2);
-        context.write(userId2, userId1);
+        // Émettre la première relation
+        outKey.set(id1);
+        outValue.set(id2);
+        context.write(outKey, outValue);
+
+        // Émettre la relation inverse
+        outKey.set(id2);
+        outValue.set(id1);
+        context.write(outKey, outValue);
+    }
+
+    // Méthode helper pour nettoyer les IDs
+    private String cleanId(String id) {
+        // Si l'ID contient une virgule et un timestamp, ne garder que la partie avant la virgule
+        if (id.contains(",")) {
+            return id.split(",")[0];
+        }
+        return id;
     }
 }

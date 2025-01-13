@@ -129,12 +129,16 @@ mvn clean install
 #remettre le nouveau jar dans le conteneur
 docker cp "C:\Julie\MIN-5A\3- Outil big data\TP_final\hadoop-tp3\p-collaborative-filtering-job-1\target\hadoop-tp3-collaborativeFiltering-job1-1.0.jar" conteneur_TP_Final:/tmp/jars/
 docker exec -it conteneur_TP_Final su - epfuser
+#verifier si le nouveau jar est bien la
 cd /tmp/jars
 ls -l
-#verifier si il y a qqchose
-rm rm hadoop-tp3-collaborativeFiltering-job1-1.0.jar
-ls -l
+#suprimer l'ancien output
+hdfs dfs -rm -r /output/job1
+#relancer le job
 hadoop jar /tmp/jars/hadoop-tp3-collaborativeFiltering-job1-1.0.jar org.epf.hadoop.colfil1.ColFilJob1 /input/relationships/data.txt /output/job1
+#verifier le resultat
+hdfs dfs -cat /output/job1/part-r-00000
+hdfs dfs -ls /output/job1
 ```
 
 ## 📁 Structure du Projet
