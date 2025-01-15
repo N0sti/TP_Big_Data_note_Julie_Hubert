@@ -1,5 +1,29 @@
 <?xml version="1.0"?>
 <configuration>
+    <!-- ResourceManager address -->
+    <property>
+        <name>yarn.resourcemanager.address</name>
+        <value>0.0.0.0:8032</value>
+    </property>
+
+    <!-- ResourceManager scheduler address -->
+    <property>
+        <name>yarn.resourcemanager.scheduler.address</name>
+        <value>0.0.0.0:8030</value>
+    </property>
+
+    <!-- ResourceManager admin address -->
+    <property>
+        <name>yarn.resourcemanager.admin.address</name>
+        <value>0.0.0.0:8033</value>
+    </property>
+
+    <!-- ResourceManager webapp address -->
+    <property>
+        <name>yarn.resourcemanager.webapp.address</name>
+        <value>0.0.0.0:8088</value>
+    </property>
+
     <property>
         <name>yarn.nodemanager.aux-services</name>
         <value>mapreduce_shuffle</value>

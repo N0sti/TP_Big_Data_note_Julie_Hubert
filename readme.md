@@ -57,7 +57,7 @@ docker exec -it conteneur_TP_Final su - epfuser
 ```
 
 ### 2. Création et Vérification de la Structure HDFS
-```bash
+```bash 
 # Créer le répertoire pour les relations
 hdfs dfs -mkdir -p /input/relationships
 
@@ -65,19 +65,19 @@ hdfs dfs -mkdir -p /input/relationships
 hdfs dfs -ls /
 hadoop fs -ls /input/relationships
 ```
+### 3. Import des Données dans HDFS
+```bash
+# Copier les données vers HDFS
+hadoop fs -put /tmp/data/relationships/data.txt /input/relationships/
+hadoop fs -put /tmp/data/relationships/testdata.txt /input/relationships/  
+```
 
-### 3. Vérification des Données Sources
+### 4. Vérification des Données Sources
 ```bash
 # Vérifier la présence du fichier de données
 ls /tmp/data/relationships/
 # Résultat attendu :
 # data.txt
-```
-
-### 4. Import des Données dans HDFS
-```bash
-# Copier les données vers HDFS
-hadoop fs -put /tmp/data/relationships/data.txt /input/relationships/
 ```
 
 ## 📦 Compilation et Déploiement
@@ -109,10 +109,8 @@ ls -l
 ### 3. Exécution du Job MapReduce
 ```bash
 # Lancer le job MapReduce
-hadoop jar /tmp/jars/hadoop-tp3-collaborativeFiltering-job1-1.0.jar \
-  org.epf.hadoop.colfil1.ColFilJob1 \
-  -Dinput=/input/relationships/data.txt \
-  -Doutput=/output/job1
+hadoop jar /tmp/jars/hadoop-tp3-collaborativeFiltering-job1-1.0.jar org.epf.hadoop.colfil1.ColFilJob1 /input/relationships/data.txt /output/job1
+
 ```
 ## Procédure pour tester le code
 ```bash
@@ -122,23 +120,37 @@ cd /tmp/jars
 ls -l
 #verifier si il y a qqchose
 rm rm hadoop-tp3-collaborativeFiltering-job1-1.0.jar
+rm rm hadoop-tp3-collaborativeFiltering-job2-1.0.jar
 ls -l
 exit
 #recompiler le projet pour avoir un nouveau jar
 mvn clean install
 #remettre le nouveau jar dans le conteneur
 docker cp "C:\Julie\MIN-5A\3- Outil big data\TP_final\hadoop-tp3\p-collaborative-filtering-job-1\target\hadoop-tp3-collaborativeFiltering-job1-1.0.jar" conteneur_TP_Final:/tmp/jars/
+docker cp "C:\Julie\MIN-5A\3- Outil big data\TP_final\hadoop-tp3\p-collaborative-filtering-job-2\target\hadoop-tp3-collaborativeFiltering-job2-1.0.jar" conteneur_TP_Final:/tmp/jars/
 docker exec -it conteneur_TP_Final su - epfuser
 #verifier si le nouveau jar est bien la
 cd /tmp/jars
 ls -l
 #suprimer l'ancien output
 hdfs dfs -rm -r /output/job1
+hdfs dfs -rm -r /output/job2
 #relancer le job
 hadoop jar /tmp/jars/hadoop-tp3-collaborativeFiltering-job1-1.0.jar org.epf.hadoop.colfil1.ColFilJob1 /input/relationships/data.txt /output/job1
+hadoop jar /tmp/jars/hadoop-tp3-collaborativeFiltering-job2-1.0.jar org.epf.hadoop.colfil1.ColFilJob2 /output/job1 /output/job2
+#lancer les tests
+hadoop jar /tmp/jars/hadoop-tp3-collaborativeFiltering-job1-1.0.jar org.epf.hadoop.colfil1.ColFilJob1 /input/relationships/testdata.txt /output/job1test
+hadoop jar /tmp/jars/hadoop-tp3-collaborativeFiltering-job2-1.0.jar org.epf.hadoop.colfil1.ColFilJob2 /output/job1test /output/job2test
 #verifier le resultat
 hdfs dfs -cat /output/job1/part-r-00000
 hdfs dfs -ls /output/job1
+hdfs dfs -cat /output/job2/part-r-00000
+hdfs dfs -ls /output/job2
+#afficher les resultats des tests
+hdfs dfs -cat /output/job1test/part-r-00000
+hdfs dfs -cat /output/job1test/part-r-00001
+hdfs dfs -cat /output/job2test/part-r-00000
+hdfs dfs -cat /output/job2test/part-r-00001
 ```
 ### Extraire les Résultats et les afficher dans le PC en local
 #### Dans le conteneur
@@ -153,6 +165,14 @@ exit  # Pour sortir du conteneur
 mkdir -p "C:\Julie\MIN-5A\3- Outil big data\TP_final\hadoop-tp3\data\relationships\job1"
 docker cp "conteneur_TP_Final:/home/epfuser/relationships/job1" "C:\Julie\MIN-5A\3- Outil big data\TP_final\hadoop-tp3\data\relationships\job1"
 ```
+regler le pb de connexion au resource manager lors de l'execution du job 2, et permetre d'acceder a l'interface graphique sur http://localhost:8088
+```bash
+docker exec -it conteneur_TP_Final su - epfuser
+export YARN_RESOURCEMANAGER_USER=epfuser
+export YARN_NODEMANAGER_USER=epfuser
+start-yarn.sh
+jps
+```
 ## 📁 Structure du Projet
 
 ```
@@ -161,7 +181,9 @@ hadoop-tp3/
 ├── data/
 │   └── relationships/
 │       └── data.txt
+│       └── testdata.txt
 ├── .gitkeep
+├── schema_des_donnees_test.png
 ├── deploy/
 ├── jars/
 │   └── p-collaborative-filtering-job-1/
