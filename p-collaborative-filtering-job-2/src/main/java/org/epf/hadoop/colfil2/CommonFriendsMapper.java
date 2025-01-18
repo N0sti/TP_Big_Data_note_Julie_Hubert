@@ -12,16 +12,16 @@ public class CommonFriendsMapper extends Mapper<Object, Text, UserPair, Text> {
 
     @Override
     protected void map(Object key, Text value, Context context) throws IOException, InterruptedException {
-        // Parse input: "user: friend1, friend2, friend3"
+        // Parser input: "user: friend1, friend2, friend3"
         String[] parts = value.toString().split(":");
         if (parts.length < 2) {
-            return; // Skip malformed input
+            return; // Skip input malformater
         }
 
         String user = parts[0].trim();
         String[] friends = parts[1].trim().split(",\\s*");
 
-        // Emit pairs (User1, User2)
+        // // Emmetre des paire (User1, User2) (User1, User2)
         for (int i = 0; i < friends.length; i++) {
             for (int j = i + 1; j < friends.length; j++) {
                 userPair = new UserPair(friends[i], friends[j]);

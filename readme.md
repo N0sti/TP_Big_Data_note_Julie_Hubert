@@ -39,14 +39,7 @@ docker buildx build -t hadoop-tp-final-img .
 ### 3. Démarrage du Conteneur
 ```bash
 # Lancer le conteneur avec les volumes montés
-docker run -d --rm \
-  -p 8088:8088 \
-  -p 9870:9870 \
-  -p 9864:9864 \
-  -v "C:\Julie\MIN-5A\3- Outil big data\TP_final\hadoop-tp3\data:/tmp/data" \
-  -v "C:\Julie\MIN-5A\3- Outil big data\TP_final\hadoop-tp3\jars:/tmp/jars" \
-  --name conteneur_TP_Final \
-  hadoop-tp-final-img
+docker run -d --rm -p 8088:8088 -p 9870:9870 -p 9864:9864 -v "C:\Julie\MIN-5A\3- Outil big data\TP_final\hadoop-tp3\data:/tmp/data" -v "C:\Julie\MIN-5A\3- Outil big data\TP_final\hadoop-tp3\jars:/tmp/jars" --name conteneur_TP_Final  hadoop-tp-final-img
 ```
 
 ## 🔄 Configuration HDFS et Import des Données
@@ -112,7 +105,7 @@ ls -l
 hadoop jar /tmp/jars/hadoop-tp3-collaborativeFiltering-job1-1.0.jar org.epf.hadoop.colfil1.ColFilJob1 /input/relationships/data.txt /output/job1
 
 ```
-## Procédure pour tester le code
+## 🧪 Procédure pour tester le code
 ```bash
 #supprimer l'ancien jar du conteneur
 docker exec -it conteneur_TP_Final su - epfuser

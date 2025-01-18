@@ -29,21 +29,21 @@ public class ColFilJob1 extends Configured implements Tool {
         Job job = Job.getInstance(conf, "Relationship Processing");
         job.setJarByClass(ColFilJob1.class);
 
-        // Configure input/output
+        // Configurer input/output
         FileInputFormat.addInputPath(job, new Path(input));
         FileOutputFormat.setOutputPath(job, new Path(output));
 
-        // Set custom InputFormat
+        // mettre un format custom pour l'InputFormat
         job.setInputFormatClass(RelationshipInputFormat.class);
 
         // Set Mapper and Reducer
         job.setMapperClass(RelationshipMapper.class);
         job.setReducerClass(RelationshipReducer.class);
 
-        // Set number of reducers
+        // saisie le nombre de reducers
         job.setNumReduceTasks(2);
 
-        // Set output types
+        // saisie des types de sortie
         job.setOutputKeyClass(Text.class);
         job.setOutputValueClass(Text.class);
 

@@ -28,7 +28,7 @@ public class ColFilJob2 {
         job.setOutputKeyClass(UserPair.class);
         job.setOutputValueClass(Text.class);
 
-        job.setNumReduceTasks(2); // Set two reducers
+        job.setNumReduceTasks(2); // mettre 2 reducers
         FileInputFormat.addInputPath(job, new Path(args[1]));
         FileOutputFormat.setOutputPath(job, new Path(args[2]));
 
