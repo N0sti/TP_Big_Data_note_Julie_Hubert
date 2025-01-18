@@ -1,0 +1,6 @@
+org\epf\hadoop\colfil1\ColFilJob1.class
+org\epf\hadoop\colfil1\RelationshipInputFormat.class
+org\epf\hadoop\colfil1\RelationshipRecordReader.class
+org\epf\hadoop\colfil1\RelationshipMapper.class
+org\epf\hadoop\colfil1\RelationshipReducer.class
+org\epf\hadoop\colfil1\Relationship.class
